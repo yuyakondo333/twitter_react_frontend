@@ -1,9 +1,26 @@
-import React from 'react'
+import React from 'react';
 
-export const Button = ({ onClick, children, ...props }) => {
+export const Button = ({ 
+  onClick,
+  children,
+  className = "",
+  disabled = false,
+  type = "button",
+  ...props
+}) => {
+  const baseClass = `rounded-full px-4 py-2 cursor-pointer text-white
+    ${disabled ? "bg-blue-300 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"}
+  `;
+
   return (
-    <button onClick={onClick} {...props} className="rounded-full bg-blue-500 px-6 py-2 cursor-pointer">
-      {children || "アカウント作成"}
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      type={type}
+      className={`${baseClass} ${className}`}
+      {...props}
+    >
+      {children}
     </button>
   );
 };

@@ -4,6 +4,7 @@ import { TextField } from '../field/TextField';
 import { EmailField } from '../field/EmailField';
 import { PasswordField } from '../field/PasswordField';
 import { BirthdayField } from '../field/BirthdayField';
+import { Button } from '../Button';
 
 export const Modal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
@@ -67,8 +68,16 @@ export const Modal = ({ isOpen, onClose }) => {
             </div>
           )}
           <ul>
-            <TextField value={formData.username} onChange={handleInputChange} errors={errors.username}/>
-            <EmailField value={formData.email} onChange={handleInputChange} errors={errors.email}/>
+            <TextField
+              value={formData.username}
+              onChange={handleInputChange}
+              errors={errors.username}
+            />
+            <EmailField
+              value={formData.email}
+              onChange={handleInputChange}
+              errors={errors.email}
+            />
             <PasswordField
               name="password1"
               value={formData.password1}
@@ -81,22 +90,23 @@ export const Modal = ({ isOpen, onClose }) => {
               onChange={handleInputChange}
               errors={errors.password2}
             />
-            <BirthdayField value={formData.birthday} onChange={handleInputChange} errors={errors.birthday}/>
+            <BirthdayField
+              value={formData.birthday}
+              onChange={handleInputChange}
+              errors={errors.birthday}
+            />
             <div className="flex justify-between px-7">
-              <button
+              <Button
                 onClick={handleSubmit}
                 disabled={isLoading || !isFormValid}
-                className='rounded-full my-6 px-6 py-2 bg-blue-500 w-40 cursor-pointer
-                            disabled:bg-blue-300 disabled:text-white/70 disabled:cursor-not-allowed'
-              >
-                {isLoading ? '送信中' : '新規登録'}
-              </button>
-              <button
+                className="my-6 w-40"
+                children={isLoading ? '送信中' : '新規登録'}
+              />
+              <Button
                 onClick={onClose}
-                className='rounded-full my-6 px-6 py-2 bg-gray-500 w-40 cursor-pointer'
-              >
-                閉じる
-              </button>
+                className='bg-gray-500 my-6 w-40 hover:bg-gray-700'
+                children='閉じる'
+              />
             </div>
           </ul>
         </div>
