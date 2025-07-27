@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { TextField } from '../field/TextField';
+import { EmailField } from '../field/EmailField';
+import { PasswordField } from '../field/PasswordField';
+import { BirthdayField } from '../field/BirthdayField';
 
 export const Modal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
@@ -30,7 +34,7 @@ export const Modal = ({ isOpen, onClose }) => {
     setErrors({});
 
     try {
-      const response = await axios.post('http://localhost:8000/api/v1/auth/register', formData);
+      await axios.post('http://localhost:8000/api/v1/auth/register', formData);
       setIsSubmitted(true);
       onClose();
     } catch (error) {
@@ -38,11 +42,17 @@ export const Modal = ({ isOpen, onClose }) => {
     } finally {
       setIsLoading(false);
       setIsSubmitted(false);
-
       setTimeout(() => {
       }, 100);
     }
   };
+
+  const isFormValid =
+    formData.username.trim() !== '' &&
+    formData.email.trim() !== '' &&
+    formData.password1.trim() !== '' &&
+    formData.password2.trim() !== '' &&
+    formData.password1 === formData.password2;
 
   return (
     <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-90">
@@ -57,81 +67,29 @@ export const Modal = ({ isOpen, onClose }) => {
             </div>
           )}
           <ul>
-            <li className='p-3 mt-2'>
-              <input
-                type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
-                placeholder='名前'
-                className='p-2 border border-gray-600 rounded-lg w-90 bg-black text-white placeholder-gray-400 autofill:bg-black autofill:text-white'
-              />
-              {errors.username && (
-                <p className="text-red-500 text-sm mt-1">{errors.username[0]}</p>
-              )}
-            </li>
-            <li className='p-3 mt-2'>
-              <input
-                type="text"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                placeholder='メール'
-                className='p-2 border border-gray-600 rounded-lg w-90 bg-black text-white placeholder-gray-400 autofill:bg-black autofill:text-white'
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email[0]}</p>
-              )}
-            </li>
-            <li className='p-3 mt-2'>
-              <input
-                type='password'
-                name="password1"
-                value={formData.password1}
-                onChange={handleInputChange}
-                placeholder='パスワード（英数字9文字以上）'
-                autoComplete="new-password"
-                className='p-2 border border-gray-600 rounded-lg w-90 bg-black text-white placeholder-gray-400'
-              />
-              {errors.password1 && (
-                <p className="text-red-500 text-sm mt-1">{errors.password1[0]}</p>
-              )}
-            </li>
-            <li className='p-3 mt-2'>
-              <input
-                type='password'
-                name="password2"
-                value={formData.password2}
-                onChange={handleInputChange}
-                placeholder='パスワード（確認用）'
-                autoComplete="new-password"
-                className='p-2 border border-gray-600 rounded-lg w-90 bg-black text-white placeholder-gray-400'
-              />
-              {errors.password2 && (
-                <p className="text-red-500 text-sm mt-1">{errors.password2[0]}</p>
-              )}
-            </li>
-            <li className='p-3 mt-2'>
-              <label htmlFor="birthday" className='block p-4 font-bold text-left'>生年月日（任意）</label>
-              <input
-                type="date"
-                name="birthday"
-                id="birthday"
-                value={formData.birthday}
-                onChange={handleInputChange}
-                className='p-2 border border-gray-600 rounded-lg w-90 bg-black text-white placeholder-gray-400'
-              />
-              {errors.birthday && (
-                <p className="text-red-500 text-sm mt-1">{errors.birthday[0]}</p>
-              )}
-            </li>
+            <TextField value={formData.username} onChange={handleInputChange} errors={errors.username}/>
+            <EmailField value={formData.email} onChange={handleInputChange} errors={errors.email}/>
+            <PasswordField
+              name="password1"
+              value={formData.password1}
+              onChange={handleInputChange}
+              errors={errors.password1}
+            />
+            <PasswordField
+              name="password2"
+              value={formData.password2}
+              onChange={handleInputChange}
+              errors={errors.password2}
+            />
+            <BirthdayField value={formData.birthday} onChange={handleInputChange} errors={errors.birthday}/>
             <div className="flex justify-between px-7">
               <button
                 onClick={handleSubmit}
-                disabled={isLoading}
-                className='rounded-full my-6 px-6 py-2 bg-blue-500 w-40 cursor-pointer'
+                disabled={isLoading || !isFormValid}
+                className='rounded-full my-6 px-6 py-2 bg-blue-500 w-40 cursor-pointer
+                            disabled:bg-blue-300 disabled:text-white/70 disabled:cursor-not-allowed'
               >
-                Debug: {isLoading ? '送信中...' : '新規登録'} (Loading: {isLoading.toString()})
+                {isLoading ? '送信中' : '新規登録'}
               </button>
               <button
                 onClick={onClose}
