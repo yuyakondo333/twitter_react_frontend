@@ -1,7 +1,11 @@
+import React from 'react'
+import { Link } from "react-router-dom";
+import { Login } from "./auth/Login"
+
 function App() {
   return (
     <>
-      <h1>Let's Create Twitter Clone</h1>
+      <Link to="/login"><Login /></Link>
     </>
   )
 }
