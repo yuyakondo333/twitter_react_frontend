@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { apiClient } from '../../../utils/api';
 import { TextField } from '../field/TextField';
 import { EmailField } from '../field/EmailField';
 import { PasswordField } from '../field/PasswordField';
@@ -12,8 +12,8 @@ export const Modal = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
-    password1: '',
-    password2: '',
+    password: '',
+    password_confirmation: '',
     birthday: '',
   });
 
@@ -35,7 +35,7 @@ export const Modal = ({ isOpen, onClose }) => {
     setErrors({});
 
     try {
-      await axios.post('http://localhost:8000/api/v1/auth/register', formData);
+      await apiClient.post('/auth/register', formData)
       setIsSubmitted(true);
       onClose();
     } catch (error) {
@@ -43,17 +43,15 @@ export const Modal = ({ isOpen, onClose }) => {
     } finally {
       setIsLoading(false);
       setIsSubmitted(false);
-      setTimeout(() => {
-      }, 100);
     }
   };
 
   const isFormValid =
     formData.username.trim() !== '' &&
     formData.email.trim() !== '' &&
-    formData.password1.trim() !== '' &&
-    formData.password2.trim() !== '' &&
-    formData.password1 === formData.password2;
+    formData.password.trim() !== '' &&
+    formData.password_confirmation.trim() !== '' &&
+    formData.password === formData.password_confirmation;
 
   return (
     <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-90">
@@ -79,16 +77,16 @@ export const Modal = ({ isOpen, onClose }) => {
               errors={errors.email}
             />
             <PasswordField
-              name="password1"
-              value={formData.password1}
+              name="password"
+              value={formData.password}
               onChange={handleInputChange}
-              errors={errors.password1}
+              errors={errors.password}
             />
             <PasswordField
-              name="password2"
-              value={formData.password2}
+              name="password_confirmation"
+              value={formData.password_confirmation}
               onChange={handleInputChange}
-              errors={errors.password2}
+              errors={errors.password_confirmation}
             />
             <BirthdayField
               value={formData.birthday}
